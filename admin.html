@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIFA Electricals - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #27ae60;
+        }
+
+        body {
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+        }
+
+        .admin-title {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .nav-tab {
+            padding: 1rem 2rem;
+            background-color: white;
+            border: 2px solid #ddd;
+            border-bottom: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+        }
+
+        .nav-tab.active {
+            background-color: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .nav-tab:hover {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-danger {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #229954;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .data-table th {
+            background-color: var(--light);
+            font-weight: 700;
+        }
+
+        .data-table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .close {
+            float: right;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-tab {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .data-table {
+                font-size: 0.9rem;
+            }
+
+            .action-btns {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="admin-title">SIFA Electricals - Admin Panel</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('products')">Products</button>
+            <button class="nav-tab" onclick="showTab('dealers')">Dealer Inquiries</button>
+        </div>
+
+        <!-- Products Tab -->
+        <div id="products" class="tab-content active">
+            <h2>Product Management</h2>
+
+            <form id="productForm">
+                <div class="form-group">
+                    <label for="productName">Product Name *</label>
+                    <input type="text" id="productName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="productWatt">Wattage</label>
+                    <input type="text" id="productWatt" placeholder="e.g., 9 W">
+                </div>
+
+                <div class="form-group">
+                    <label for="productPrice">Price (₹) *</label>
+                    <input type="number" id="productPrice" step="0.01" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="productMoq">MOQ (Minimum Order Quantity)</label>
+                    <input type="number" id="productMoq" placeholder="e.g., 100">
+                </div>
+
+                <div class="form-group">
+                    <label for="productCategory">Category *</label>
+                    <select id="productCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="color">Color Lighting</option>
+                        <option value="gamma">Gamma DOB LED</option>
+                        <option value="smart">Smart LED Lights</option>
+                        <option value="music">Music Bulb</option>
+                        <option value="solar">Solar Lantern</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="productImage">Product Image</label>
+                    <input type="file" id="productImage" accept="image/*">
+                    <small>Upload a product image (optional)</small>
+                </div>
+
+                <button type="submit" class="btn btn-success">Add Product</button>
+                <button type="button" class="btn btn-primary" onclick="resetForm()">Reset</button>
+            </form>
+
+            <table class="data-table" id="productsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Watt</th>
+                        <th>Price</th>
+                        <th>MOQ</th>
+                        <th>Category</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="productsTableBody">
+                    <!-- Products will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Dealers Tab -->
+        <div id="dealers" class="tab-content">
+            <h2>Dealer Inquiries</h2>
+
+            <table class="data-table" id="dealersTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Business</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Location</th>
+                        <th>Experience</th>
+                        <th>Message</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="dealersTableBody">
+                    <!-- Dealer inquiries will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Edit Product</h2>
+            <form id="editProductForm">
+                <input type="hidden" id="editProductId">
+                <div class="form-group">
+                    <label for="editProductName">Product Name *</label>
+                    <input type="text" id="editProductName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editProductWatt">Wattage</label>
+                    <input type="text" id="editProductWatt">
+                </div>
+
+                <div class="form-group">
+                    <label for="editProductPrice">Price (₹) *</label>
+                    <input type="number" id="editProductPrice" step="0.01" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editProductMoq">MOQ</label>
+                    <input type="number" id="editProductMoq">
+                </div>
+
+                <div class="form-group">
+                    <label for="editProductCategory">Category *</label>
+                    <select id="editProductCategory" required>
+                        <option value="color">Color Lighting</option>
+                        <option value="gamma">Gamma DOB LED</option>
+                        <option value="smart">Smart LED Lights</option>
+                        <option value="music">Music Bulb</option>
+                        <option value="solar">Solar Lantern</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="editProductDescription">Description</label>
+                    <textarea id="editProductDescription" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="editProductImage">Product Image</label>
+                    <input type="file" id="editProductImage" accept="image/*">
+                    <small>Upload a new image (leave empty to keep current)</small>
+                    <div id="currentImageContainer" style="margin-top: 10px;"></div>
+                </div>
+
+                <button type="submit" class="btn btn-success">Update Product</button>
+                <button type="button" class="btn btn-primary" onclick="closeModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Product Management
+        let products = JSON.parse(localStorage.getItem('sifaProducts')) || [
+            { id: 1, name: "NIGHT LED BULB", watt: "0.5 W", price: 8.50, moq: 100, category: "color", description: "Low wattage night bulb for ambient lighting", image: null },
+            { id: 2, name: "DEEP LIGHT (white)", watt: "5 W", price: 29.00, moq: 50, category: "color", description: "81mm diameter, cut out 58mm", image: null },
+            { id: 3, name: "DEEP LIGHT (color)", watt: "5 W", price: 32.00, moq: 50, category: "color", description: "81mm diameter, cut out 58mm, color changing", image: null },
+            { id: 4, name: "LED BULB (ECO)57mm", watt: "9 W", price: 9.75, moq: 200, category: "color", description: "Economy series LED bulb", image: null },
+            { id: 5, name: "LED BULB (ECO)65mm", watt: "12 W", price: 21.75, moq: 100, category: "color", description: "Economy series LED bulb", image: null },
+            { id: 6, name: "LED BULB (NJM)57mm", watt: "9 W", price: 10.50, moq: 200, category: "color", description: "NJM series LED bulb", image: null },
+            { id: 7, name: "LED BULB (NJM)65mm", watt: "12 W", price: 22.50, moq: 100, category: "color", description: "NJM series LED bulb", image: null },
+            { id: 8, name: "ACDC BULB (65mm)", watt: "12 W", price: 55.00, moq: 100, category: "color", description: "AC/DC compatible bulb", image: null },
+            { id: 9, name: "1 IN ONE BULB(60mm)", watt: "9 W", price: 21.75, moq: 100, category: "color", description: "1 in one bulb", image: null }
+        ];
+
+        let nextProductId = Math.max(...products.map(p => p.id)) + 1;
+
+        function saveProducts() {
+            localStorage.setItem('sifaProducts', JSON.stringify(products));
+        }
+
+        function displayProducts() {
+            const tbody = document.getElementById('productsTableBody');
+            tbody.innerHTML = '';
+
+            products.forEach(product => {
+                const imageCell = product.image ? `<img src="${product.image}" style="max-width: 50px; max-height: 50px;">` : 'No image';
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${product.id}</td>
+                    <td>${imageCell}</td>
+                    <td>${product.name}</td>
+                    <td>${product.watt || '-'}</td>
+                    <td>₹${product.price.toFixed(2)}</td>
+                    <td>${product.moq || '-'}</td>
+                    <td>${product.category}</td>
+                    <td class="action-btns">
+                        <button class="btn btn-primary" onclick="editProduct(${product.id})">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteProduct(${product.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const fileInput = document.getElementById('productImage');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const newProduct = {
+                        id: nextProductId++,
+                        name: document.getElementById('productName').value,
+                        watt: document.getElementById('productWatt').value,
+                        price: parseFloat(document.getElementById('productPrice').value),
+                        moq: parseInt(document.getElementById('productMoq').value) || null,
+                        category: document.getElementById('productCategory').value,
+                        description: document.getElementById('productDescription').value,
+                        image: e.target.result
+                    };
+
+                    products.push(newProduct);
+                    saveProducts();
+                    displayProducts();
+                    document.getElementById('productForm').reset();
+                    alert('Product added successfully!');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                const newProduct = {
+                    id: nextProductId++,
+                    name: document.getElementById('productName').value,
+                    watt: document.getElementById('productWatt').value,
+                    price: parseFloat(document.getElementById('productPrice').value),
+                    moq: parseInt(document.getElementById('productMoq').value) || null,
+                    category: document.getElementById('productCategory').value,
+                    description: document.getElementById('productDescription').value,
+                    image: null
+                };
+
+                products.push(newProduct);
+                saveProducts();
+                displayProducts();
+                this.reset();
+                alert('Product added successfully!');
+            }
+        });
+
+        function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (product) {
+                document.getElementById('editProductId').value = product.id;
+                document.getElementById('editProductName').value = product.name;
+                document.getElementById('editProductWatt').value = product.watt || '';
+                document.getElementById('editProductPrice').value = product.price;
+                document.getElementById('editProductMoq').value = product.moq || '';
+                document.getElementById('editProductCategory').value = product.category;
+                document.getElementById('editProductDescription').value = product.description || '';
+
+                const currentImageContainer = document.getElementById('currentImageContainer');
+                if (product.image) {
+                    currentImageContainer.innerHTML = '<p>Current Image:</p><img src="' + product.image + '" style="max-width: 100px; max-height: 100px;">';
+                } else {
+                    currentImageContainer.innerHTML = '<p>No image uploaded</p>';
+                }
+
+                document.getElementById('editModal').style.display = 'block';
+            }
+        }
+
+        document.getElementById('editProductForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const id = parseInt(document.getElementById('editProductId').value);
+            const productIndex = products.findIndex(p => p.id === id);
+
+            if (productIndex !== -1) {
+                const fileInput = document.getElementById('editProductImage');
+                const file = fileInput.files[0];
+
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        products[productIndex] = {
+                            id: id,
+                            name: document.getElementById('editProductName').value,
+                            watt: document.getElementById('editProductWatt').value,
+                            price: parseFloat(document.getElementById('editProductPrice').value),
+                            moq: parseInt(document.getElementById('editProductMoq').value) || null,
+                            category: document.getElementById('editProductCategory').value,
+                            description: document.getElementById('editProductDescription').value,
+                            image: e.target.result
+                        };
+
+                        saveProducts();
+                        displayProducts();
+                        closeModal();
+                        alert('Product updated successfully!');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    products[productIndex] = {
+                        id: id,
+                        name: document.getElementById('editProductName').value,
+                        watt: document.getElementById('editProductWatt').value,
+                        price: parseFloat(document.getElementById('editProductPrice').value),
+                        moq: parseInt(document.getElementById('editProductMoq').value) || null,
+                        category: document.getElementById('editProductCategory').value,
+                        description: document.getElementById('editProductDescription').value,
+                        image: products[productIndex].image // Keep existing image
+                    };
+
+                    saveProducts();
+                    displayProducts();
+                    closeModal();
+                    alert('Product updated successfully!');
+                }
+            }
+        });
+
+        function deleteProduct(id) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                products = products.filter(p => p.id !== id);
+                saveProducts();
+                displayProducts();
+                alert('Product deleted successfully!');
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('productForm').reset();
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        // Dealer Inquiries Management
+        let dealerInquiries = JSON.parse(localStorage.getItem('sifaDealerInquiries')) || [];
+
+        function displayDealerInquiries() {
+            const tbody = document.getElementById('dealersTableBody');
+            tbody.innerHTML = '';
+
+            dealerInquiries.forEach((inquiry, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${inquiry.name}</td>
+                    <td>${inquiry.business}</td>
+                    <td>${inquiry.phone}</td>
+                    <td>${inquiry.email}</td>
+                    <td>${inquiry.location}</td>
+                    <td>${inquiry.experience}</td>
+                    <td>${inquiry.message || '-'}</td>
+                    <td>${new Date(inquiry.date).toLocaleDateString()}</td>
+                    <td class="action-btns">
+                        <button class="btn btn-danger" onclick="deleteInquiry(${index})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function deleteInquiry(index) {
+            if (confirm('Are you sure you want to delete this inquiry?')) {
+                dealerInquiries.splice(index, 1);
+                localStorage.setItem('sifaDealerInquiries', JSON.stringify(dealerInquiries));
+                displayDealerInquiries();
+                alert('Inquiry deleted successfully!');
+            }
+        }
+
+        // Initialize
+        displayProducts();
+        displayDealerInquiries();
+
+        // Check for new dealer inquiries every 5 seconds
+        setInterval(() => {
+            const updatedInquiries = JSON.parse(localStorage.getItem('sifaDealerInquiries')) || [];
+            if (updatedInquiries.length !== dealerInquiries.length) {
+                dealerInquiries = updatedInquiries;
+                displayDealerInquiries();
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
